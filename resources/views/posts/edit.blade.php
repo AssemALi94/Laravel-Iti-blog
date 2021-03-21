@@ -15,7 +15,12 @@
             <textarea class="form-control" name="body">{{ $post['body'] }}</textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary">Update</button>
+        <div class="form-group mb-3">
+            <label for="creator" class="form-label">Post Creator</label>
+            <input type="text" class="form-control" name="creator" aria-describedby="emailHelp"
+                value="{{ Auth::user()->name }}" disabled>
+        </div>
+        <x-button type="primary">Update</x-button>
     </form>
 
 @endsection
