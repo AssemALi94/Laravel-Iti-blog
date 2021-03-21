@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,14 @@ Route::get('/', [PagesController::class, 'index']);
 Route::get('/about', [PagesController::class, 'about']);
 Route::get('/services', [PagesController::class, 'services']);
 
-Route::resource('posts',PostsController::class);
+Route::resource('posts', PostsController::class);
 //Route::get('posts/delete/{id}', [PostsController::class, 'delete'])->name('delete');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+Route::get('/deletedposts', [PostsController::class, 'showAllDeletedPosts'])->name('showAllDeletedPosts');
+//Route::get('/removedpost', [PostsController::class, 'showAllDeletedPosts']);
+Route::get('/deletedposts/{id}', [PostsController::class, 'restoreDeletedPost'])->name('restoreDeletedPost');
+Route::get('/retorepost/{id}', [PostsController::class, 'deletePermanently'])->name('deletePermanently');

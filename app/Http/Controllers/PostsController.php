@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon ;
+
 use Illuminate\Http\Request;
 use App\Models\Post;
+use phpDocumentor\Reflection\Types\Null_;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class PostsController extends Controller
 {
@@ -21,7 +25,7 @@ class PostsController extends Controller
     public function index()
     {
         //$posts=Post::all();
-        $posts=Post::orderBy('created_at', 'asc')->paginate(1);
+        $posts = Post::orderBy('created_at', 'asc')->paginate(1);
 
         return view('posts.index')->with('posts', $posts);
     }
@@ -44,17 +48,19 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        $this ->validate($request, [
+        $this->validate($request, [
             'title' => 'required|unique:posts|min:3',
-            'body'=>'required|min:10'
+            'body' => 'required|min:10'
         ]);
         //create post
-        $post=new Post;
-        $post -> title =$request->input('title');
-        $post -> body =$request->input('body');
-        $post -> user_id =auth()->user()->id;
-        $post -> save();
-        return redirect('/posts')->with('success', 'Post Created');
+        $post = new Post;
+        $post->title = $request->input('title');
+        $post->body = $request->input('body');
+        $post->user_id = auth()->user()->id;
+        $post->created_at=date('l jS  F Y h:i:s A');
+
+        $post->save();
+        return redirect('/home')->with('success', 'Post Created');
     }
 
     /**
@@ -65,7 +71,7 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        $post= Post::find($id);
+        $post = Post::find($id);
         return view('posts.show')->with('post', $post);
     }
 
@@ -78,15 +84,15 @@ class PostsController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
-        
+
         //Check if post exists before deleting
         if (!isset($post)) {
-            return redirect('/posts')->with('error', 'No Post Found');
+            return redirect('/home')->with('error', 'No Post Found');
         }
 
         // Check for correct user
-        if (auth()->user()->id !==$post->user_id) {
-            return redirect('/posts')->with('error', 'Unauthorized Page');
+        if (auth()->user()->id !== $post->user_id) {
+            return redirect('/home')->with('error', 'Unauthorized Page');
         }
 
         return view('posts.edit')->with('post', $post);
@@ -101,17 +107,17 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this ->validate($request, [
+        $this->validate($request, [
             'title' => 'required|min:3',
-            'body'=>'required|min:10'
+            'body' => 'required|min:10'
         ]);
         //create post
-        $post=Post::find($id);
-        $post -> title =$request->input('title');
-        $post -> body =$request->input('body');
-        $post -> user_id =auth()->user()->id;
-        $post -> save();
-        return redirect('/posts')->with('success', 'Post updated');
+        $post = Post::find($id);
+        $post->title = $request->input('title');
+        $post->body = $request->input('body');
+        $post->user_id = auth()->user()->id;
+        $post->save();
+        return redirect('/home')->with('success', 'Post updated');
     }
 
     /**
@@ -123,17 +129,41 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
-        
+
         //Check if post exists before deleting
         if (!isset($post)) {
-            return redirect('/posts')->with('error', 'No Post Found');
+            return redirect('/home')->with('error', 'No Post Found');
         }
 
         // Check for correct user
-        if (auth()->user()->id !==$post->user_id) {
-            return redirect('/posts')->with('error', 'Unauthorized Page');
+        if (auth()->user()->id !== $post->user_id) {
+            return redirect('/home')->with('error', 'Unauthorized Page');
         }
         $post->delete();
-        return redirect('/posts')->with('success', 'Post Removed');
+        return redirect('/home')->with('success', 'Post Removed');
+    }
+
+    public function showAllDeletedPosts()
+    {
+        $posts = Post::onlyTrashed()->get();
+        return view('posts.deletedposts')->with('posts', $posts);
+    }
+
+
+    public function restoreDeletedPost($id)
+    {
+        $post = Post::where('id', $id)->withTrashed()->first();
+        $post->restore();
+        return redirect('/home')->with('success', 'Post restored');
+    }
+
+
+    public function deletePermanently($id)
+    {
+        $post = Post::where('id', $id)->withTrashed()->first();
+
+        $post->forceDelete();
+
+        return redirect('/home')->with('success', 'Post Deleted Permanently');
     }
 }

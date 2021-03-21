@@ -4,15 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
-    public $primaryKey ='id';
+    use SoftDeletes;
+    use HasFactory;
 
-    public $timestamps=true;
-    
+    protected $fillable = [
+        'title',
+        'description',
+        'user_id',
+    ];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\User','user_id');
     }
 }

@@ -14,8 +14,7 @@
                             </div>
                         @endif
 
-                        <a class="btn btn-primary mb-3" aria-current="page" href="/posts/create">Create Post</a>
-                        <a class="btn btn-primary mb-3" aria-current="page" href="/deletedposts">Trash</a>
+
 
                         <h3>Your Blog Posts</h3>
                         @if (count($posts) > 0)
@@ -28,14 +27,12 @@
                                 @foreach ($posts as $post)
                                     <tr>
                                         <td>{{ $post->title }}</td>
-                                        <td><a href="/posts/{{ $post->id }}/edit" class="btn btn-secondary">Edit</a></td>
-                                        <td>
-                                            <form class="float-right" method="POST" action="{{ route('posts.destroy', $post->id) }}">
-                                                @method('DELETE')
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                                            </form>
+                                        <td><a href="/deletedposts/{{ $post->id }}"
+                                                class="btn btn-secondary">restore</a>
                                         </td>
+                                        <td><a href="/retorepost/{{ $post->id }}" class="btn btn-danger">Delete</a>
+                                        </td>
+
                                     </tr>
                                 @endforeach
                             </table>

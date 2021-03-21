@@ -1,3 +1,5 @@
+use Carbon\Carbon;
+
 @extends('layouts.app')
 
 @section('content')
@@ -6,7 +8,9 @@
         @foreach ($posts as $post)
             <div class="card p-3 m-3">
                 <h3 class="card-title"><a href="/posts/{{ $post->id }}">{{ $post->title }}</a></h3>
-                <small>Written on {{ $post->created_at }}</small>
+                <p class="card-title"><a href="/posts/{{ $post->id }}">{{ $post->body }}</a></p>
+                <small>Written on {{ Carbon\Carbon::parse($post->created_at)->format('l jS \\of F Y h:i:s A') }}</small>
+                <small>Written by {{user::find($post->user_id)  }}</small>
             </div>
         @endforeach
         {{ $posts->links() }}
