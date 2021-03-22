@@ -7,8 +7,9 @@
             <div class="card p-3 m-3">
                 <h3 class="card-title"><a href="/posts/{{ $post->id }}">{{ $post->title }}</a></h3>
                 <p class="card-title"><a href="/posts/{{ $post->id }}">{{ $post->body }}</a></p>
-                <small>Written on {{ Carbon\Carbon::parse($post->created_at)->format('l jS \\of F Y h:i:s A') }}</small>
-                <small>Written by {{ $post->user ? $post->user->name : 'user not found' }}</small>
+                <small>{{ $post->slug }}</small>
+                <small>written on {{ Carbon\Carbon::parse($post->created_at)->format('l jS \\of F Y h:i:s A') }}</small>
+                <small>posted by by {{ $post->user ? $post->user->name : 'user not found' }}</small>
             </div>
         @endforeach
         {{ $posts->links() }}

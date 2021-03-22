@@ -6,8 +6,7 @@ use Carbon\Carbon ;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-use phpDocumentor\Reflection\Types\Null_;
-use Symfony\Component\VarDumper\Cloner\Data;
+use \Cviebrock\EloquentSluggable\Services\SlugService;
 
 class PostsController extends Controller
 {
@@ -52,14 +51,21 @@ class PostsController extends Controller
             'title' => 'required|unique:posts|min:3',
             'body' => 'required|min:10'
         ]);
-        //create post
-        $post = new Post;
-        $post->title = $request->input('title');
-        $post->body = $request->input('body');
-        $post->user_id = auth()->user()->id;
-        $post->created_at=date('l jS  F Y h:i:s A');
 
-        $post->save();
+        // $parameters = $request->all();
+        //Post::create($parameters);
+        //create post
+
+        $insert = [
+            'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
+            'title' => $request->title,
+            'body' => $request->body,
+            'user_id' => auth()->id(),
+
+        ];
+   
+        Post::insertGetId($insert);
+       
         return redirect('/home')->with('success', 'Post Created');
     }
 

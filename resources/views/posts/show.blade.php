@@ -1,14 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-    <a href="/posts" class="btn btn-default float-right">Go Back</a>
+    <a href="/posts" class="btn btn-secondary float-right">Go Back</a>
 
     <h1>{{ $post->title }}
     </h1>
     <div>{{ $post->body }}</div>
     <hr>
-    <small>Written on {{ Carbon\Carbon::parse($post->created_at)->format('l jS \\of F Y h:i:s A') }}</small>
-    <small>Written by {{ $post->user ? $post->user->name : 'user not found' }}</small>
+    <small>{{ $post->slug }}</small>
+    <hr>
+    <small>written on {{ Carbon\Carbon::parse($post->created_at)->format('l jS \\of F Y h:i:s A') }}</small>
+    <small>posted by by {{ $post->user ? $post->user->name : 'user not found' }}</small>
     <hr>
     @if (!Auth::guest())
         @if (Auth::user()->id == $post->user_id)
