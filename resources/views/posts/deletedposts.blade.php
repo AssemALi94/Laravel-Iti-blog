@@ -16,7 +16,7 @@
 
 
 
-                        <h3>Your Blog Posts</h3>
+                        <h3>Deleted Posts</h3>
                         @if (count($posts) > 0)
                             <table class="table table-striped">
                                 <tr>
